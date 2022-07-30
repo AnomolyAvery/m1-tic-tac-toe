@@ -1,5 +1,6 @@
 import classNames from '@/utils/classNames';
 import React from 'react'
+import Button from './Button';
 
 type Cell = 'X' | 'O' | '';
 
@@ -39,12 +40,16 @@ const Game: React.FC = () => {
                 <h3
                     className='text-2xl font-bold mb-4'
                 >
-                    {winner ? `${winner} wins!` : 'Draw!'}
+                    {winner ? (<span className={
+                        classNames(
+                            winner === 'X' ? 'text-blue-500' : 'text-red-500'
+                        )
+                    }>{winner} wins!</span>) : 'Draw!'}
                 </h3>
 
-                <button onClick={onResetClick}>
+                <Button color='blue' onClick={onResetClick}>
                     Reset
-                </button>
+                </Button>
             </div>
         )
     }
@@ -62,9 +67,9 @@ const Game: React.FC = () => {
     if (turn === null) {
         return (
             <div>
-                <button onClick={onTurnClick}>
+                <Button onClick={onTurnClick} color="green">
                     Randomize Turn
-                </button>
+                </Button>
             </div>
         )
     }
@@ -168,8 +173,13 @@ type BoardCellProps = {
 const BoardCell = (props: BoardCellProps) => {
 
     return (
-        <div onClick={props.onClick} className='bg-blue-500 h-20'>
-            {props.value}
+        <div onClick={props.onClick} className={classNames(
+            'h-20 rounded-md flex items-center justify-center',
+            props.value === '' ? 'bg-gray-700' : '',
+            props.value === 'X' ? 'bg-blue-500' : '',
+            props.value === 'O' ? 'bg-red-500' : ''
+        )}>
+            <span className='text-3xl font-bold'>{props.value}</span>
         </div>
     )
 };

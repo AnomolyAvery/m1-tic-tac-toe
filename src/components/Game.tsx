@@ -1,9 +1,9 @@
 import classNames from '@/utils/classNames';
 import React from 'react'
 
-type Square = 'X' | 'O' | '';
+type Cell = 'X' | 'O' | '';
 
-type Board = Array<Square>;
+type Board = Array<Cell>;
 
 type Player = 'X' | 'O';
 
@@ -21,6 +21,8 @@ const Game: React.FC = () => {
 
     const [turn, updateTurn] = React.useState<Player | null>(null);
 
+    const [winner, updateWinner] = React.useState<Player | null>(null);
+
     const onResetClick = () => {
         updateBoard(initialBoard);
         updateTurn(null);
@@ -33,6 +35,13 @@ const Game: React.FC = () => {
                 <h1
                     className='text-3xl font-bold mb-4'
                 >Game Over</h1>
+
+                <h3
+                    className='text-2xl font-bold mb-4'
+                >
+                    {winner ? `${winner} wins!` : 'Draw!'}
+                </h3>
+
                 <button onClick={onResetClick}>
                     Reset
                 </button>
@@ -60,6 +69,41 @@ const Game: React.FC = () => {
         )
     }
 
+    const getWinner = (): Player | null => {
+        const winningCombinations = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+
+        for (const combo of winningCombinations) {
+            const [a, b, c] = combo;
+
+            if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+
+                const cell = board[a];
+
+                if (cell === 'X') {
+                    return 'X';
+                }
+
+                if (cell === 'O') {
+                    return 'O';
+                }
+
+                return null;
+            }
+        }
+
+        return null;
+    };
+
+
     const onCellClick = (cellIdx: number) => {
         if (gameOver) {
             return;
@@ -74,6 +118,28 @@ const Game: React.FC = () => {
         newBoard[cellIdx] = turn;
 
         updateBoard(newBoard);
+
+        const winner = getWinner();
+        console.log('Winner', winner);
+
+        if (winner !== null) {
+            updateWinner(winner);
+            updateGameOver(true);
+            return;
+        }
+
+        const emptyCells = newBoard.filter(cell => cell === '');
+
+        if (emptyCells.length === 0) {
+            updateGameOver(true);
+            return;
+        }
+
+        const newTurn = turn === 'X' ? 'O' : 'X';
+
+        updateTurn(newTurn);
+
+
     };
 
 
@@ -96,7 +162,7 @@ const Game: React.FC = () => {
 
 type BoardCellProps = {
     onClick: () => void;
-    value: Square;
+    value: Cell;
 }
 
 const BoardCell = (props: BoardCellProps) => {

@@ -1,9 +1,13 @@
 import classNames from '@/utils/classNames';
 import React from 'react'
 
-const Game: React.FC = () => {
+type Square = 'X' | 'O' | '';
 
-    type Board = Array<'X' | 'O' | ''>;
+type Board = Array<Square>;
+
+type Player = 'X' | 'O';
+
+const Game: React.FC = () => {
 
     const initialBoard: Board = [
         '', '', '',
@@ -14,8 +18,6 @@ const Game: React.FC = () => {
     const [gameOver, updateGameOver] = React.useState(false);
 
     const [board, updateBoard] = React.useState(initialBoard);
-
-    type Player = 'X' | 'O';
 
     const [turn, updateTurn] = React.useState<Player | null>(null);
 
@@ -58,6 +60,22 @@ const Game: React.FC = () => {
         )
     }
 
+    const onCellClick = (cellIdx: number) => {
+        if (gameOver) {
+            return;
+        }
+
+        if (board[cellIdx] !== '') {
+            return;
+        }
+
+        const newBoard = [...board];
+
+        newBoard[cellIdx] = turn;
+
+        updateBoard(newBoard);
+    };
+
 
     return (
         <div>
@@ -69,7 +87,7 @@ const Game: React.FC = () => {
             </h2>
             <div className='grid grid-cols-3 gap-2'>
                 {!gameOver && turn && board.map((cell, idx) => (
-                    <BoardCell key={`board-cell-${idx}`} />
+                    <BoardCell key={`board-cell-${idx}`} value={board[idx]} onClick={() => onCellClick(idx)} />
                 ))}
             </div>
         </div>
@@ -77,14 +95,15 @@ const Game: React.FC = () => {
 }
 
 type BoardCellProps = {
-
+    onClick: () => void;
+    value: Square;
 }
 
 const BoardCell = (props: BoardCellProps) => {
 
     return (
-        <div className='bg-blue-500 h-20'>
-
+        <div onClick={props.onClick} className='bg-blue-500 h-20'>
+            {props.value}
         </div>
     )
 };

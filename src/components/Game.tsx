@@ -1,6 +1,7 @@
 import classNames from '@/utils/classNames';
 import React from 'react'
 import Button from './Button';
+import { motion } from "framer-motion";
 
 type Cell = 'X' | 'O' | '';
 
@@ -74,7 +75,7 @@ const Game: React.FC = () => {
         )
     }
 
-    const getWinner = (): Player | null => {
+    const getWinner = (board: Board): Player | null => {
         const winningCombinations = [
             [0, 1, 2],
             [3, 4, 5],
@@ -124,8 +125,7 @@ const Game: React.FC = () => {
 
         updateBoard(newBoard);
 
-        const winner = getWinner();
-        console.log('Winner', winner);
+        const winner = getWinner(newBoard);
 
         if (winner !== null) {
             updateWinner(winner);
@@ -143,8 +143,6 @@ const Game: React.FC = () => {
         const newTurn = turn === 'X' ? 'O' : 'X';
 
         updateTurn(newTurn);
-
-
     };
 
 

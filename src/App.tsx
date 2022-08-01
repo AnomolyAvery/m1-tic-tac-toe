@@ -6,7 +6,7 @@ function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <div className="mx-auto container max-w-6xl py-10">
+    <div className="mx-auto container max-w-6xl py-10 px-4 sm:px-6 lg:px-8">
       <h1 className='text-3xl font-bold'>
         Tic-Tac-Toe
       </h1>
